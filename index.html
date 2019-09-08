@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Son Test alda</title>
+	<link rel="stylesheet" href="\leaflet\leaflet.css"/>
+   <script src="\leaflet\leaflet.js"></script>
+   <script src="\leaflet\leaflet-rastercoords-master\rastercoords.js"></script>
+   <style>#map { background: #000; } .legend { text-align: left; line-height: 20px; color: #555; background-color: #fff; border-radius: 5px; box-shadow: 0 0 15px rgba(0,0,0,0.2); padding: 5px; } .legend i { width: 17px; height: 17px; border-radius: 50%; float: left; margin-right: 8px; opacity: 1; }</style>
+  </head>
+  <body>
+	<div id="map" style="width: 100%; height: 100%; position:fixed; top: 0; left: 0"></div>
+	<script>
+		function getColor(d) {
+			return d === 'Immortal'  ? "#fa628b" :
+				d === 'Divine'  ? "#fc792b" :
+				d === 'Ancient' ? "#ff80ff" :
+				d === 'Legend' ? "#06d0fe" :
+				d === 'Archon' ? "#372319" :
+				d === 'Crusader' ? "#4ba0f1" :
+				d === 'Guardian' ? "#49ce05" :
+				d === 'Herald' ? "#03b385" :
+				d === 'Uncalibrated' ? "#404040" :
+					"#000";
+		}
+		
+		// for use with browserify / webpack
+		//var L = require('leaflet')
+		//L.RasterCoords = require('leaflet-rastercoords')
+	
+		var img = [
+		30720,  // original width of image (here from `example/karta.jpg`)
+		30720   // original height of image
+		]
+		// create the map
+		var map = L.map('map')
+	
+		// assign map and image dimensions
+		var rc = new L.RasterCoords(map, img)
+		// set max zoom Level (might be `x` if gdal2tiles was called with `-z 0-x` option)
+		map.setMaxZoom(rc.zoomLevel(5))
+		// all coordinates need to be unprojected using the `unproject` method
+		// set the view in the lower right edge of the image
+		map.setView(rc.unproject([img[0], img[1]]), 2)
+	
+		// set markers on click events in the map
+		//map.on('click', function (event) {
+		// any position in leaflet needs to be projected to obtain the image coordinates
+		//var coords = rc.project(event.latlng)
+		//var marker = L.marker(rc.unproject(coords))
+		//	.addTo(map)
+		//marker.bindPopup('[' + Math.floor(coords.x) + ',' + Math.floor(coords.y) + ']')
+		//	.openPopup()
+		//})
+		
+		// the tile layer containing the image generated with `gdal2tiles --leaflet -p raster -w none <img> tiles`
+		L.tileLayer('./tiles/{z}/{x}/{y}.png', {
+		noWrap: true,
+		attribution: 'Visualization of Dota Peers ©baschi29 ©derteufelqwe'
+		}).addTo(map)
+		
+		//Legend
+		
+		var legend = L.control({position: 'bottomleft'});
+		legend.onAdd = function (map) {
+
+		var div = L.DomUtil.create('div', 'info legend');
+		labels = ['<strong>Rank</strong>'],
+		categories = ['Immortal','Divine','Ancient','Legend','Archon','Crusader','Guardian','Herald','Uncalibrated'];
+
+		for (var i = 0; i < categories.length; i++) {
+
+				div.innerHTML += 
+				labels.push(
+					'<i style="background:' + getColor(categories[i]) + '"></i> ' +
+				(categories[i] ? categories[i] : '+'));
+				console.log(i)
+				
+			}
+			div.innerHTML = labels.join('<br>');
+			console.log(div)
+		return div;
+		};
+		
+		legend.addTo(map);
+	</script>
+  </body>
+</html>
