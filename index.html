@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Son Test alda</title>
+    <title>Visualization of Dota Peers</title>
 	<link rel="stylesheet" href="\leaflet\leaflet.css"/>
    <script src="\leaflet\leaflet.js"></script>
    <script src="\leaflet\leaflet-rastercoords-master\rastercoords.js"></script>
@@ -25,13 +25,9 @@
 					"#000";
 		}
 		
-		// for use with browserify / webpack
-		//var L = require('leaflet')
-		//L.RasterCoords = require('leaflet-rastercoords')
-	
 		var img = [
-		30720,  // original width of image (here from `example/karta.jpg`)
-		30720   // original height of image
+		40.960,  // original width of image (here from `example/karta.jpg`)
+		40.960   // original height of image
 		]
 		// create the map
 		var map = L.map('map')
@@ -39,20 +35,10 @@
 		// assign map and image dimensions
 		var rc = new L.RasterCoords(map, img)
 		// set max zoom Level (might be `x` if gdal2tiles was called with `-z 0-x` option)
-		map.setMaxZoom(rc.zoomLevel(5))
+		map.setMaxZoom(rc.zoomLevel(10))
 		// all coordinates need to be unprojected using the `unproject` method
 		// set the view in the lower right edge of the image
 		map.setView(rc.unproject([img[0], img[1]]), 2)
-	
-		// set markers on click events in the map
-		//map.on('click', function (event) {
-		// any position in leaflet needs to be projected to obtain the image coordinates
-		//var coords = rc.project(event.latlng)
-		//var marker = L.marker(rc.unproject(coords))
-		//	.addTo(map)
-		//marker.bindPopup('[' + Math.floor(coords.x) + ',' + Math.floor(coords.y) + ']')
-		//	.openPopup()
-		//})
 		
 		// the tile layer containing the image generated with `gdal2tiles --leaflet -p raster -w none <img> tiles`
 		L.tileLayer('./tiles/{z}/{x}/{y}.png', {
@@ -75,11 +61,9 @@
 				labels.push(
 					'<i style="background:' + getColor(categories[i]) + '"></i> ' +
 				(categories[i] ? categories[i] : '+'));
-				console.log(i)
 				
 			}
 			div.innerHTML = labels.join('<br>');
-			console.log(div)
 		return div;
 		};
 		
