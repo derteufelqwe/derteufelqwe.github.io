@@ -26,8 +26,8 @@
 		}
 		
 		var img = [
-		40.960,  // original width of image (here from `example/karta.jpg`)
-		40.960   // original height of image
+		40960,  // original width of image (here from `example/karta.jpg`)
+		40960   // original height of image
 		]
 		// create the map
 		var map = L.map('map')
@@ -41,7 +41,7 @@
 		map.setView(rc.unproject([img[0], img[1]]), 2)
 		
 		// the tile layer containing the image generated with `gdal2tiles --leaflet -p raster -w none <img> tiles`
-		L.tileLayer('./tiles/{z}/{x}/{y}.png', {
+		L.tileLayer('/tiles/{z}/{x}/{y}.png', {
 		noWrap: true,
 		attribution: 'Visualization of Dota Peers ©baschi29 ©derteufelqwe'
 		}).addTo(map)
